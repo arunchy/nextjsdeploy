@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Build Docker image for Next.js app inside nextapp folder
+      # Build Docker image locally (optional for checking build success)
       - name: Build Next.js Docker Image
         run: docker build -t nextapp -f Dockerfile .
 
@@ -22,16 +22,16 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      # Copy only the nextapp folder to the server (exclude node_modules and .git)
-      - name: Copy nextapp folder to server
+      # Copy project files (excluding node_modules, .git) to remote server
+      - name: Sync app to server
         run: |
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" \
             --exclude=".git" \
             --exclude="node_modules" \
-            ./nextapp/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USER }}/nextapp
+            ./nextapp/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USER }}/app/
 
-      # Run Docker Compose remotely to build and start the Next.js app
-      - name: Run Docker Compose remotely
+      # Run docker-compose remotely
+      - name: Run Docker Compose on Remote Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /home/${{ secrets.SSH_USER }}/app
