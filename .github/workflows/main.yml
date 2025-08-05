@@ -28,7 +28,7 @@ jobs:
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" \
             --exclude=".git" \
             --exclude="node_modules" \
-            ./nextapp/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USER }}/app/
+            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USER }}/app
 
       # Run docker-compose remotely
       - name: Run Docker Compose on Remote Server
