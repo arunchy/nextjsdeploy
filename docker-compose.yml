@@ -1,14 +1,28 @@
-version: "3.9"
+version: "3.8"
 
 services:
-  frontend:
+  nextjs:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.nextjs
+    container_name: nextjs
+    expose:
+      - "3000"
+    restart: always
+    environment:
+      - NODE_ENV=production
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.server  # your renamed nginx Dockerfile
+    container_name: nginx
     ports:
-      - "8080:80"
-      - "8443:443"
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - nextjs
+    restart: always
     volumes:
-      - ./ssl:/etc/nginx/ssl
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-        
+      - ./ssl:/etc/nginx/ssl  # mount your SSL cert folder if you use SSL
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro  # mount your nginx config (optional)

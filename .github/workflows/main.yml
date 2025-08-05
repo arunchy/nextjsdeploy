@@ -14,7 +14,7 @@ jobs:
 
       # Build Docker image locally (optional for checking build success)
       - name: Build Next.js Docker Image
-        run: docker build -t nextapp -f Dockerfile .
+        run: docker build -t nextapp -f Dockerfile.nextjs .
 
       # Setup SSH key
       - name: Setup SSH
