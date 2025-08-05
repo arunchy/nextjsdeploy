@@ -26,3 +26,5 @@ services:
     volumes:
       - ./ssl:/etc/nginx/ssl  # mount your SSL cert folder if you use SSL
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # mount your nginx config (optional)
+
+# changes
