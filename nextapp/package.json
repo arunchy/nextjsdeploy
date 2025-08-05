@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --port 3000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3000",
     "lint": "next lint",
-    "export": "next export"
+    "export": "next export",
+    "analyze":"ANALYZE=true next build"
   },
   "dependencies": {
     "react": "19.1.0",
