@@ -1,24 +1,29 @@
+# Stage 1: Install dependencies and build
+FROM node:current-alpine3.22 AS builder
 
-# Stage 1 : Build the Next app
-FROM node:current-alpine3.22 As builder
+# Set working directory
 WORKDIR /app
+
+# Copy only package files first for better caching
 COPY nextapp/package*.json ./nextapp/
-RUN npm install --prefix /app/nextapp
+RUN npm install --prefix ./nextapp
+
+# Copy the rest of the application
 COPY nextapp/ ./nextapp
-RUN npm run build --prefix /app/nextapp
-RUN npm run export --prefix /app/nextapp
 
-# Stage 2 : Server the build using nginx
-FROM nginx:stable-alpine
+# Build the app
+RUN npm run build --prefix ./nextapp
 
-#Remove default nginx static files
-RUN rm -rf /usr/share/nginx/html/*
+# Stage 2: Run the app with Node.js
+FROM node:current-alpine3.22
 
-#copy the exported static file from builder stage to nginx folder 
-COPY --from=builder /app/nextapp/out /usr/share/nginx/html
+WORKDIR /app
 
-#Expose the port 80
-EXPOSE 80
+# Copy built app from builder stage
+COPY --from=builder /app/nextapp /app
 
-#start nginx server 
-CMD ["nginx","-g","deamon off;"]
+# Expose the default Next.js port
+EXPOSE 3000
+
+# Start the Next.js server
+CMD ["npm", "start"]
